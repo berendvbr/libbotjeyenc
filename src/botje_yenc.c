@@ -10,8 +10,8 @@ int64_t botje_yenc__decode(unsigned char *str_dst, unsigned char *str_src, int64
         
         unsigned char tmp_char = str_src[l];
         
-        // these chars should not be in the string because they were escaped
-        if(tmp_char == 0 || tmp_char == 10 || tmp_char == 13)  {
+        // these chars should not be in the string because they are escaped
+        if(tmp_char == 0 || tmp_char == 10 || tmp_char == 13) {
             return -1;
         }
 
@@ -21,6 +21,10 @@ int64_t botje_yenc__decode(unsigned char *str_dst, unsigned char *str_src, int64
         }
 
         if(special_char) {
+            
+            // these special chars ('@', 'J', 'M', '}') should only be allowed after escape char
+            if(tmp_char != 64 && tmp_char != 74 && tmp_char != 77 && tmp_char != 125) return -1;
+
             tmp_char = (tmp_char - 64) % 256;
             special_char = false;
         }
